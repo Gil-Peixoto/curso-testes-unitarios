@@ -11,6 +11,7 @@ import br.com.gilpeixoto.cursotestes.domain.User;
 import br.com.gilpeixoto.cursotestes.domain.dto.UserDTO;
 import br.com.gilpeixoto.cursotestes.repositories.UserRepository;
 import br.com.gilpeixoto.cursotestes.services.UserService;
+import br.com.gilpeixoto.cursotestes.services.exceptions.DataIntegrityViolationException;
 import br.com.gilpeixoto.cursotestes.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -34,7 +35,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(UserDTO obj) {
+        findByIdEmail(obj);
         return repository.save(mapper.map(obj, User.class));
+    }
+
+    private void findByIdEmail(UserDTO obj) {
+        Optional<User> user = repository.findByEmail(obj.getEmail());
+        if (user.isPresent()) {
+            throw new DataIntegrityViolationException("E-mail já cadastrado no sistema");
+            
+        }
     }
 
 }
