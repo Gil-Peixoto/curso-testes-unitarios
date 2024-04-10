@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,10 +33,10 @@ public class UserServiceImplTest {
     private static final String PASSWORD = "gil123";
 
 
-    @InjectMocks   //Serve para implementar uma instancia real
+    @InjectMocks     //  <--Serve para injetar uma instância real
     private UserServiceImpl service;
 
-    @Mock
+    @Mock            //  <--Serve para injetar uma instância "fake", onde eu não preciso acessar o banco de dados na prática
     private UserRepository repository;
 
     @Mock
@@ -63,7 +64,16 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAnListOfUser() {
+
+        when(repository.findAll()).thenReturn(List.of(user));
+
+        List<User> response = service.findAll();
+
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(User.class, response.get(0).getClass());
+        assertEquals(1, response.get(0).getId());
 
     }
 
@@ -85,8 +95,7 @@ public class UserServiceImplTest {
     @Test
     void whenFindByIdThenReturnAnObjectNotFoundException() {
 
-        when(repository.findById(anyInt()))
-                .thenThrow(new ObjectNotFoundException("Objeto não encontrado"));
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Objeto não encontrado"));
 
         try{
             service.findById(ID);
