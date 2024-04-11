@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import br.com.gilpeixoto.cursotestes.domain.User;
 import br.com.gilpeixoto.cursotestes.domain.dto.UserDTO;
 import br.com.gilpeixoto.cursotestes.repositories.UserRepository;
+import br.com.gilpeixoto.cursotestes.services.exceptions.DataIntegrityViolationException;
 import br.com.gilpeixoto.cursotestes.services.exceptions.ObjectNotFoundException;
 
 @SpringBootTest
@@ -66,6 +68,18 @@ public class UserServiceImplTest {
         assertEquals(1, response.getId());
         assertEquals("Gil", response.getName());
 
+    }
+    @Test
+    void whenCreateThenReturnAnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try{
+            optionalUser.get().setId(2);
+            service.create(userDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals("E-mail já cadastrado no sistema", ex.getMessage());
+        }
     }
 
     @Test
@@ -127,6 +141,18 @@ public class UserServiceImplTest {
         assertEquals(1, response.getId());
         assertEquals("Gil", response.getName());
 
+    }
+    @Test
+    void whenUpdateThenReturnAnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try{
+            optionalUser.get().setId(2);
+            service.create(userDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals("Objeto não encontrado", ex.getMessage());
+        }
     }
 
     private void startUser() {
