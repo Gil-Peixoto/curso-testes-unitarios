@@ -90,7 +90,7 @@ public class UserServiceImplTest {
         when(repository.findById(anyInt())).thenReturn(optionalUser);
         doNothing().when(repository).deleteById(anyInt());
         service.delete(1);
-        verify(repository, times(2)).deleteById(anyInt());
+        verify(repository, times(1)).deleteById(anyInt());
     }
 
     @Test
