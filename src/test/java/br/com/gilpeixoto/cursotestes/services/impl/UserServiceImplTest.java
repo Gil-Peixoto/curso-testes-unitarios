@@ -157,7 +157,7 @@ public class UserServiceImplTest {
             service.create(userDTO);
         } catch (Exception ex) {
             assertEquals(DataIntegrityViolationException.class, ex.getClass());
-            assertEquals("Objeto não encontrado", ex.getMessage());
+            assertEquals("E-mail já cadastrado no sistema", ex.getMessage());
         }
     }
 

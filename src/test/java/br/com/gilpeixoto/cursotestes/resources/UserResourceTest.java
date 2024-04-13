@@ -2,9 +2,9 @@ package br.com.gilpeixoto.cursotestes.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -65,10 +65,18 @@ public class UserResourceTest {
     }
 
     @Test
-    void testDelete() {
+    void whenDeleteThenReturnSuccess() {
+        
+        doNothing().when(service).delete(anyInt());
 
+        ResponseEntity<UserDTO> response = resource.delete(ID);
+
+        assertNotNull(response);
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
+    @SuppressWarnings("null")
     @Test
     void whenFindAllThenReturnAnListOfUserDTO() {
 
@@ -87,6 +95,7 @@ public class UserResourceTest {
         assertEquals(1, response.getBody().get(0).getId());
     }
 
+    @SuppressWarnings("null")
     @Test
     void whenFindByIdThenReturnSuccess() {
 
@@ -105,9 +114,10 @@ public class UserResourceTest {
         assertEquals(EMAIL, response.getBody().getEmail());
     }
 
+    @SuppressWarnings("null")
     @Test
     void whenUpdateThenReturnSuccess() {
-        when(service.create(userDTO)).thenReturn(user);
+        when(service.update(userDTO)).thenReturn(user);
         when(mapper.map(any(), any())).thenReturn(userDTO);
 
         ResponseEntity<UserDTO> response = resource.update(ID, userDTO);
